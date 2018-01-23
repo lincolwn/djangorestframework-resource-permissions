@@ -37,7 +37,7 @@ class ResourcePermisison:
         Check permission for specific endpoint represented by method.
         :param endpoint: method name that represents endpoint
         '''
-        permset = self.initialize_permset()
+        permset = self.initialize_permset(action)
         if permset:
             return permset.check_endpoint_permissions(self.request, action)
         return True
@@ -46,7 +46,7 @@ class ResourcePermisison:
         '''
         Check permisison to specific resource (object instance).
         '''
-        permset = self.initialize_permset()
+        permset = self.initialize_permset(action)
         if permset:
             return permset.check_object_permissions(self.request, action, obj)
         return True
