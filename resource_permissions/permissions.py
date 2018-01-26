@@ -32,14 +32,14 @@ class ResourcePermisison:
             return permset.check_permissions(self.request, self.view)
         return True
 
-    def check_endpoint_permissions(self, action):
+    def check_action_permissions(self, action):
         '''
         Check permission for specific endpoint represented by method.
         :param endpoint: method name that represents endpoint
         '''
         permset = self.initialize_permset(action)
         if permset:
-            return permset.check_endpoint_permissions(self.request, action)
+            return permset.check_action_permissions(self.request, action)
         return True
 
     def check_object_permissions(self, action, obj):
@@ -78,7 +78,7 @@ class PermissionComponent:
     def check_permissions(self, request, view):
         raise NotImplementedError('children classes must implement this method')
 
-    def check_endpoint_permissions(self, request, action):
+    def check_action_permissions(self, request, action):
         raise NotImplementedError('children classes must implement this method')
 
     def check_object_permissions(self, request, action, obj):
@@ -110,10 +110,10 @@ class And(PermissionOperator):
                 break
         return value
 
-    def check_endpoint_permissions(self, request, action):
+    def check_action_permissions(self, request, action):
         value = True
         for perm_component in self.components:
-            value = value & perm_component.check_endpoint_permissions(request, action)
+            value = value & perm_component.check_action_permissions(request, action)
             if not value:
                 break
         return value
@@ -137,10 +137,10 @@ class Or(PermissionOperator):
                 break
         return value
 
-    def check_endpoint_permissions(self, request, action):
+    def check_action_permissions(self, request, action):
         value = False
         for perm_component in self.components:
-            value = value | perm_component.check_endpoint_permissions(request, action)
+            value = value | perm_component.check_action_permissions(request, action)
             if value:
                 break
         return value
@@ -159,8 +159,8 @@ class Not(PermissionComponent):
     def check_permissions(self, request, view):
         return not self.check_permissions[0](request, view)
 
-    def check_endpoint_permissions(self, request, action):
-        return not self.check_endpoint_permissions[0](request, action)
+    def check_action_permissions(self, request, action):
+        return not self.check_action_permissions[0](request, action)
 
     def check_object_permissions(self, request, action, obj):
         return not self.check_object_permissions[0](request, action, obj)
