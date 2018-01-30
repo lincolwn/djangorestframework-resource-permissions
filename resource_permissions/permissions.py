@@ -19,36 +19,35 @@ class ResourcePermisison:
     update_perms = None
     destroy_perms = None
 
-    def __init__(self, request, view):
-        self.request = request
-        self.view = view
+    # def __init__(self, view):
+    #     self.view = view
 
-    def check_permissions(self):
+    def check_permissions(self, request, view):
         '''
         Check class based view permission (like ModelViewset)
         '''
         permset = self.initialize_permset()
         if permset:
-            return permset.check_permissions(self.request, self.view)
+            return permset.check_permissions(request, view)
         return True
 
-    def check_action_permissions(self, action):
+    def check_action_permissions(self, request, action):
         '''
         Check permission for specific endpoint represented by method.
         :param endpoint: method name that represents endpoint
         '''
         permset = self.initialize_permset(action)
         if permset:
-            return permset.check_action_permissions(self.request, action)
+            return permset.check_action_permissions(request, action)
         return True
 
-    def check_object_permissions(self, action, obj):
+    def check_object_permissions(self, request, action, obj):
         '''
         Check permisison to specific resource (object instance).
         '''
         permset = self.initialize_permset(action)
         if permset:
-            return permset.check_object_permissions(self.request, action, obj)
+            return permset.check_object_permissions(request, action, obj)
         return True
 
     def initialize_permset(self, action=None):

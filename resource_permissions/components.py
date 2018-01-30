@@ -9,7 +9,7 @@ class IsSuperUser(PermissionComponent):
     def check_action_permissions(self, request, action):
         return request.user.is_superuser
 
-    def check_object_permissions(self, request, action):
+    def check_object_permissions(self, request, action, obj):
         return request.user.is_superuser
 
 
@@ -21,7 +21,7 @@ class IsAdminUser(PermissionComponent):
     def check_action_permissions(self, request, action):
         return request.user.is_staff
 
-    def check_object_permissions(self, request, action):
+    def check_object_permissions(self, request, action, obj):
         return request.user.is_staff
 
 
@@ -33,7 +33,7 @@ class IsAuthenticated(PermissionComponent):
     def check_action_permissions(self, request, action):
         return request.user.is_authenticated
 
-    def check_object_permissions(self, request, action):
+    def check_object_permissions(self, request, action, obj):
         return request.user.is_authenticated
 
 
@@ -45,5 +45,5 @@ class AllowAny(PermissionComponent):
     def check_action_permissions(self, request, action):
         return True
 
-    def check_object_permissions(self, request, action):
+    def check_object_permissions(self, request, action, obj):
         return True
