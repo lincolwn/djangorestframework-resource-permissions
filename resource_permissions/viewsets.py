@@ -1,6 +1,9 @@
 from .decorators import permission_wrapper
+from resource_permissions.settings import perms_settings
 
 class PermissionViewSetMixin:
+
+    permission_classes = perms_settings.DSR_RESOURCE_PERMISSIONS_CLASSES
 
     def __init__(self, **kwargs):
         super(PermissionViewSetMixin, self).__init__(**kwargs)
