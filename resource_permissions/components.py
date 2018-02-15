@@ -26,7 +26,7 @@ class IsAdminUser(PermissionComponent):
 
 
 class IsAuthenticated(PermissionComponent):
-    
+        
     def check_permissions(self, request, view):
         return request.user.is_authenticated
 
@@ -47,3 +47,14 @@ class AllowAny(PermissionComponent):
 
     def check_object_permissions(self, request, action, obj):
         return True
+
+class DenyAll(PermissionComponent):
+        
+    def check_permissions(self, request, view):
+        return False
+
+    def check_action_permissions(self, request, action):
+        return False
+
+    def check_object_permissions(self, request, action, obj):
+        return False

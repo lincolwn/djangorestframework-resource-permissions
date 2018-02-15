@@ -1,5 +1,7 @@
-from .decorators import permission_wrapper
+from __future__ import unicode_literals
+from .decorators import permission_wrapper, get_object_wrapper
 from resource_permissions.settings import perms_settings
+from rest_framework.generics import get_object_or_404
 
 class PermissionViewSetMixin:
 
@@ -20,6 +22,22 @@ class PermissionViewSetMixin:
             method = getattr(self, action, None)
             if method:
                 setattr(self, method.__name__, permission_wrapper(method))
+        
+        if hasattr(self, 'get_object'):
+            self.get_object = get_object_wrapper(self.get_object)
+
+
+    def check_permissions(self, request):
+        """
+        Same of original from django rest framework, just changes
+        method called from permission class
+        """
+        for permission in self.get_permissions():
+            if not permission.check_permissions(request, self):
+                # import pdb; pdb.set_trace()
+                self.permission_denied(
+                    request, message=getattr(permission, 'message', None)
+                )
 
 
     def check_action_permissions(self, request, action):
@@ -44,3 +62,4 @@ class PermissionViewSetMixin:
                 self.permission_denied(
                     request, message=getattr(permission, 'message', None)
                 )
+        

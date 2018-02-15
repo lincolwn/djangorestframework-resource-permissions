@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 import inspect
 from functools import reduce
 from rest_framework.settings import api_settings
@@ -7,20 +8,22 @@ class ResourcePermisison:
     Base class for manage all resource permission.
 
     global_perms: represents total access permision to resource
-    common_perms: represents all rules applied together another
-                  permissions rules (and operation)
+    minimal_perms: represents minimal permission to be applied 
+                   on resource level (resource is represented by
+                   viewset objects)
     '''
 
     global_perms = None
-    common_perms = None
+    minimal_perms = None
     list_perms = None
     retrieve_perms = None
     create_perms = None
     update_perms = None
     destroy_perms = None
 
-    # def __init__(self, view):
-    #     self.view = view
+    def __init__(self):
+        if self.global_perms and self.minimal_perms:
+            self.global_perms & self.minimal_perms
 
     def check_permissions(self, request, view):
         '''
@@ -54,7 +57,7 @@ class ResourcePermisison:
         if action:
             permset = getattr(self, f'{action}_perms', None)
         else:
-            permset = None
+            permset = self.minimal_perms
 
         if isinstance(permset, (list, tuple)):
             permset = reduce(lambda x, y: x & y, permset)
@@ -64,8 +67,8 @@ class ResourcePermisison:
             else:
                 permset = permset()
         
-        if self.common_perms:
-            permset = (permset & self.common_perms) if permset else self.common_perms
+        if self.minimal_perms:
+            permset = (permset & self.minimal_perms) if permset else self.minimal_perms
         if self.global_perms:
             permset = (permset | self.global_perms) if permset else self.global_perms
         return permset
