@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from resource_permissions.viewsets import PermissionViewSetMixin
 from resource_permissions.decorators import detail_route
 from tests.app.models import Office, Issue
-from tests.app.permissions import OfficePermissions
+from tests.app.permissions import OfficePermissions, IssuePermissions
 from tests.app.serializers import OfficeSerializer, IssueSerializer, \
     UserSerializer
 
@@ -17,6 +17,7 @@ class OfficeViewSet(PermissionViewSetMixin, viewsets.ModelViewSet):
 class IssueViewSet(PermissionViewSetMixin, viewsets.ModelViewSet):
     queryset = Issue.objects.all()
     serializer_class = IssueSerializer
+    permission_classes = (IssuePermissions,)
 
     @detail_route(methods=['get'])
     def start(self, request, *args, **kwargs):

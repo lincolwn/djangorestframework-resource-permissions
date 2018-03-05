@@ -45,19 +45,36 @@ class IsManagerOfficeOwner(PermissionComponent):
 
     def check_object_permissions(self, request, action, obj):
         return obj.office.manager == request.user
+
+
+class IsSimpleUser(PermissionComponent):
+    
+    message = 'User is simple user'
+
+    def check_permissions(self, request, view):
+        return not Office.objects.filter(manager=request.user).exists() and \
+            not request.user.is_staff and not request.user.is_superuser
+
+    def check_action_permissions(self, request, action):
+        return not Office.objects.filter(manager=request.user).exists() and \
+            not request.user.is_staff and not request.user.is_superuser
+
+    def check_object_permissions(self, request, action, obj):
+        return not Office.objects.filter(manager=request.user).exists() and \
+            not request.user.is_staff and not request.user.is_superuser
     
 
 
 class OfficePermissions(ResourcePermisison):
     global_perms = IsSuperUser() | IsAdminUser()
     minimal_perms = IsAuthenticated()
-    create_perms = not IsManager()
+    create_perms = ~IsSimpleUser()
     update_perms = partial_update_perms = IsManager()
     destroy_perms = IsManager()
 
 
 
-class IssuePermission(ResourcePermisison):
+class IssuePermissions(ResourcePermisison):
     minimal_perms = IsAuthenticated()
     update_perms = partial_update_perms = (IsOwner() | IsManagerOfficeOwner() | 
         IsSuperUser() | IsAdminUser())

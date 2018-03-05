@@ -156,13 +156,13 @@ class Or(PermissionOperator):
         return value
 
 
-class Not(PermissionComponent):
+class Not(PermissionOperator):
 
     def check_permissions(self, request, view):
-        return not self.check_permissions[0](request, view)
+        return not self.components[0].check_permissions(request, view)
 
     def check_action_permissions(self, request, action):
-        return not self.check_action_permissions[0](request, action)
+        return not self.components[0].check_action_permissions(request, action)
 
     def check_object_permissions(self, request, action, obj):
-        return not self.check_object_permissions[0](request, action, obj)
+        return not self.components[0].check_object_permissions(request, action, obj)

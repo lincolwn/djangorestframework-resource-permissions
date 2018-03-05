@@ -34,7 +34,6 @@ class PermissionViewSetMixin:
         """
         for permission in self.get_permissions():
             if not permission.check_permissions(request, self):
-                # import pdb; pdb.set_trace()
                 self.permission_denied(
                     request, message=getattr(permission, 'message', None)
                 )
@@ -46,6 +45,7 @@ class PermissionViewSetMixin:
         Raises an appropriate exception if the request is not permitted.
         """
         for permission in self.get_permissions():
+            # import pdb; pdb.set_trace()
             if not permission.check_action_permissions(request, action):
                 self.permission_denied(
                     request, message=getattr(permission, 'message', None)
