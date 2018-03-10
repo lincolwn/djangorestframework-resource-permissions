@@ -373,104 +373,189 @@ def test_superuser_update_issue(client, office, issue):
     assert response.status_code == 200
 
 
-# def test_unauthenticated_partial_update_issue(client):
-#     pass
+def test_unauthenticated_partial_update_issue(client, issue):
+    payload = json.dumps({'description': 'update'})
+    response = client.patch(f'/issues/{issue.id}/', payload, 'application/json')
+    assert response.status_code == 403
 
 
-# def test_simple_user_partial_update_issue(client):
-#     pass
+def test_simple_user_partial_update_issue(client, issue):
+    user = UserFactory()
+    payload = json.dumps({'description': 'update'})
+    assert client.login(username=user.username, password=default_password) == True
+    response = client.patch(f'/issues/{issue.id}/', payload, 'application/json')
+    assert response.status_code == 403
 
 
-# def test_manager_partial_update_issue(client):
-#     pass
+def test_manager_partial_update_issue(client, office, user, issue):
+    payload = json.dumps({'description': 'update'})
+    assert client.login(username=user.username, password=default_password) == True
+    response = client.patch(f'/issues/{issue.id}/', payload, 'application/json')
+    assert response.status_code == 200
     
 
-# def test_admin_partial_update_issue(client):
-#     pass
+def test_admin_partial_update_issue(client, issue):
+    user = UserFactory(is_staff=True)
+    payload = json.dumps({'description': 'update'})
+    assert client.login(username=user.username, password=default_password) == True
+    response = client.patch(f'/issues/{issue.id}/', payload, 'application/json')
+    assert response.status_code == 200
 
 
-# def test_superuser_partial_update_issue(client):
-#     pass
+def test_superuser_partial_update_issue(client, issue):
+    user = UserFactory(is_superuser=True)
+    payload = json.dumps({'description': 'update'})
+    assert client.login(username=user.username, password=default_password) == True
+    response = client.patch(f'/issues/{issue.id}/', payload, 'application/json')
+    assert response.status_code == 200
 
 
-# def test_unauthenticated_destroy_issue(client):
-#     pass
+def test_unauthenticated_destroy_issue(client, issue):
+    response = client.delete(f'/issues/{issue.id}/')
+    assert response.status_code == 403
 
 
-# def test_simple_user_destroy_issue(client):
-#     pass
+def test_simple_user_destroy_issue(client, issue):
+    user = UserFactory()
+    assert client.login(username=user.username, password=default_password) == True
+    response = client.delete(f'/issues/{issue.id}/')
+    assert response.status_code == 403
 
 
-# def test_manager_destroy_issue(client):
-#     pass
+def test_manager_destroy_issue(client, office, user, issue):
+    assert client.login(username=user.username, password=default_password) == True
+    response = client.delete(f'/issues/{issue.id}/')
+    assert response.status_code == 403
     
 
-# def test_admin_destroy_issue(client):
-#     pass
+def test_admin_destroy_issue(client, issue):
+    user = UserFactory(is_staff=True)
+    assert client.login(username=user.username, password=default_password) == True
+    response = client.delete(f'/issues/{issue.id}/')
+    assert response.status_code == 403
 
 
-# def test_superuser_destroy_issue(client):
-#     pass
+
+def test_superuser_destroy_issue(client, issue):
+    user = UserFactory(is_superuser=True)
+    assert client.login(username=user.username, password=default_password) == True
+    response = client.delete(f'/issues/{issue.id}/')
+    assert response.status_code == 403
 
 
-# def test_unauthenticated_start_issue(client):
-#     pass
+def test_unauthenticated_start_issue(client, issue):
+    response = client.get(f'/issues/{issue.id}/start/')
+    assert response.status_code == 403
 
 
-# def test_simple_user_start_issue(client):
-#     pass
+def test_simple_user_start_issue(client, issue):
+    user = UserFactory()
+    assert client.login(username=user.username, password=default_password) == True
+    response = client.get(f'/issues/{issue.id}/start/')
+    assert response.status_code == 403
 
 
-# def test_manager_start_issue(client):
-#     pass
+def test_manager_start_issue(client, office, user, issue):
+    assert client.login(username=user.username, password=default_password) == True
+    response = client.get(f'/issues/{issue.id}/start/')
+    assert response.status_code == 200
     
 
-# def test_admin_start_issue(client):
-#     pass
+def test_admin_start_issue(client, issue):
+    user = UserFactory(is_staff=True)
+    assert client.login(username=user.username, password=default_password) == True
+    response = client.get(f'/issues/{issue.id}/start/')
+    assert response.status_code == 200
 
 
-# def test_superuser_start_issue(client):
-#     pass
+def test_superuser_start_issue(client, issue):
+    user = UserFactory(is_superuser=True)
+    assert client.login(username=user.username, password=default_password) == True
+    response = client.get(f'/issues/{issue.id}/start/')
+    assert response.status_code == 200
+
+def test_owner_start_issue(client, issue):
+    user = issue.owner
+    assert client.login(username=user.username, password=default_password) == True
+    response = client.get(f'/issues/{issue.id}/start/')
+    assert response.status_code == 200
 
 
-# def test_unauthenticated_finish_issue(client):
-#     pass
+def test_unauthenticated_finish_issue(client, issue):
+    response = client.get(f'/issues/{issue.id}/finish/')
+    assert response.status_code == 403
 
 
-# def test_simple_user_finish_issue(client):
-#     pass
+def test_simple_user_finish_issue(client, issue):
+    user = UserFactory()
+    assert client.login(username=user.username, password=default_password) == True
+    response = client.get(f'/issues/{issue.id}/finish/')
+    assert response.status_code == 403
 
 
-# def test_manager_finish_issue(client):
-#     pass
+def test_manager_finish_issue(client, office, user, issue):
+    assert client.login(username=user.username, password=default_password) == True
+    response = client.get(f'/issues/{issue.id}/finish/')
+    assert response.status_code == 200
     
 
-# def test_admin_finish_issue(client):
-#     pass
+def test_admin_finish_issue(client, issue):
+    user = UserFactory(is_staff=True)
+    assert client.login(username=user.username, password=default_password) == True
+    response = client.get(f'/issues/{issue.id}/finish/')
+    assert response.status_code == 200
 
 
-# def test_superuser_finish_issue(client):
-#     pass
+def test_superuser_finish_issue(client, issue):
+    user = UserFactory(is_superuser=True)
+    assert client.login(username=user.username, password=default_password) == True
+    response = client.get(f'/issues/{issue.id}/finish/')
+    assert response.status_code == 200
 
 
-# def test_unauthenticated_cancel_issue(client):
-#     pass
+def test_owner_finish_issue(client, issue):
+    user = issue.owner
+    assert client.login(username=user.username, password=default_password) == True
+    response = client.get(f'/issues/{issue.id}/finish/')
+    assert response.status_code == 200
 
 
-# def test_simple_user_cancel_issue(client):
-#     pass
+def test_unauthenticated_cancel_issue(client, issue):
+    response = client.get(f'/issues/{issue.id}/cancel/')
+    assert response.status_code == 403
 
 
-# def test_manager_cancel_issue(client):
-#     pass
+def test_simple_user_cancel_issue(client, issue):
+    user = UserFactory()
+    assert client.login(username=user.username, password=default_password) == True
+    response = client.get(f'/issues/{issue.id}/cancel/')
+    assert response.status_code == 403
+
+
+def test_manager_cancel_issue(client, office, user, issue):
+    assert client.login(username=user.username, password=default_password) == True
+    response = client.get(f'/issues/{issue.id}/cancel/')
+    assert response.status_code == 200
     
 
-# def test_admin_cancel_issue(client):
-#     pass
+def test_admin_cancel_issue(client, issue):
+    user = UserFactory(is_staff=True)
+    assert client.login(username=user.username, password=default_password) == True
+    response = client.get(f'/issues/{issue.id}/cancel/')
+    assert response.status_code == 200
 
 
-# def test_superuser_cancel_issue(client):
-#     pass
+def test_superuser_cancel_issue(client, issue):
+    user = UserFactory(is_superuser=True)
+    assert client.login(username=user.username, password=default_password) == True
+    response = client.get(f'/issues/{issue.id}/cancel/')
+    assert response.status_code == 200
+
+def test_owner_cancel_issue(client, issue):
+    user = issue.owner
+    assert client.login(username=user.username, password=default_password) == True
+    response = client.get(f'/issues/{issue.id}/cancel/')
+    assert response.status_code == 200
 
 
 def get_issue_serialized(office, user):
