@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 import factory
 from tests.app.models import Issue, Office
 from django.contrib.auth.models import User

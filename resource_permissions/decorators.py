@@ -1,8 +1,5 @@
+from __future__ import unicode_literals
 import warnings
-
-# def check_permissions(*args, **kwargs):
-#     view = func.__self__
-#     view.check_action_permissions(request, func.__name__)
 
 
 def permission_wrapper(func):

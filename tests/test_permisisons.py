@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from tests.app.models import Office, Issue
 from tests.app.factories import UserFactory, OfficeFactory, IssueFactory, \
     default_password

@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from django.conf import settings
 from resource_permissions.components import AllowAny
 from django.test.signals import setting_changed

@@ -107,7 +107,7 @@ class And(PermissionOperator):
     def check_permissions(self, request, view):
         value = True
         for perm_component in self.components:
-            value = value & perm_component.check_permissions(request, view)
+            value = value and perm_component.check_permissions(request, view)
             if not value:
                 break
         return value
@@ -115,7 +115,7 @@ class And(PermissionOperator):
     def check_action_permissions(self, request, action):
         value = True
         for perm_component in self.components:
-            value = value & perm_component.check_action_permissions(request, action)
+            value = value and perm_component.check_action_permissions(request, action)
             if not value:
                 break
         return value
@@ -123,7 +123,7 @@ class And(PermissionOperator):
     def check_object_permissions(self, request, action, obj):
         value = True
         for perm_component in self.components:
-            value = value & perm_component.check_object_permissions(request, action, obj)
+            value = value and perm_component.check_object_permissions(request, action, obj)
             if not value:
                 break
         return value
@@ -134,7 +134,7 @@ class Or(PermissionOperator):
     def check_permissions(self, request, view):
         value = False
         for perm_component in self.components:
-            value = value | perm_component.check_permissions(request, view)
+            value = value or perm_component.check_permissions(request, view)
             if value:
                 break
         return value
@@ -142,7 +142,7 @@ class Or(PermissionOperator):
     def check_action_permissions(self, request, action):
         value = False
         for perm_component in self.components:
-            value = value | perm_component.check_action_permissions(request, action)
+            value = value or perm_component.check_action_permissions(request, action)
             if value:
                 break
         return value
@@ -150,7 +150,7 @@ class Or(PermissionOperator):
     def check_object_permissions(self, request, action, obj):
         value = False
         for perm_component in self.components:
-            value = value | perm_component.check_object_permissions(request, action, obj)
+            value = value or perm_component.check_object_permissions(request, action, obj)
             if value:
                 break
         return value

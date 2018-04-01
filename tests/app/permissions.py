@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from tests.app.models import Office, Issue
 from django.contrib.auth.models import User
 from resource_permissions.permissions import ResourcePermisison, \
