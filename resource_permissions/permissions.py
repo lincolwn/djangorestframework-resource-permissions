@@ -55,7 +55,7 @@ class ResourcePermisison:
 
     def initialize_permset(self, action=None):
         if action:
-            permset = getattr(self, f'{action}_perms', None)
+            permset = getattr(self, '{}_perms'.format(action), None)
         else:
             permset = self.minimal_perms
 

@@ -50,20 +50,20 @@ def test_superuser_list_office(client, office, user):
 
 
 def test_unauthenticated_retrieve_office(client, office):
-    response = client.get(f'/offices/{office.id}/')
+    response = client.get('/offices/{}/'.format(office.id))
     assert response.status_code == 403
 
 
 def test_simple_user_retrieve_office(client, office, user):
     assert client.login(username=user.username, password=default_password) == True
-    response = client.get(f'/offices/{office.id}/')
+    response = client.get('/offices/{}/'.format(office.id))
     assert response.status_code == 200
 
 
 def test_manager_retrieve_office(client, user):
     office = OfficeFactory.create(manager=user)
     assert client.login(username=user.username, password=default_password) == True
-    response = client.get(f'/offices/{office.id}/')
+    response = client.get('/offices/{}/'.format(office.id))
     assert response.status_code == 200
 
 
@@ -71,7 +71,7 @@ def test_admin_retrieve_office(client, office, user):
     user.is_staff = True
     user.save()
     assert client.login(username=user.username, password=default_password) == True
-    response = client.get(f'/offices/{office.id}/')
+    response = client.get('/offices/{}/'.format(office.id))
     assert response.status_code == 200
 
 
@@ -79,7 +79,7 @@ def test_superuser_retrieve_office(client, office, user):
     user.is_superuser = True
     user.save()
     assert client.login(username=user.username, password=default_password) == True
-    response = client.get(f'/offices/{office.id}/')
+    response = client.get('/offices/{}/'.format(office.id))
     assert response.status_code == 200
 
 
@@ -128,15 +128,16 @@ def test_superuser_create_office(client, user):
 
 def test_unauthenticated_update_office(client, office):
     payload = {'name': 'office 1'}
-    response = client.put(f'/offices/{office.id}/', payload)
+    response = client.put('/offices/{}/'.format(office.id), payload)
     assert response.status_code == 403
+
 
 def test_simple_user_update_office(client, office):
     user = UserFactory.create()
     user_url = reverse('user-detail', args=[user.id])
     payload = json.dumps({'name': 'office 1', 'user': user_url})
     assert client.login(username=user.username, password=default_password) == True
-    response = client.put(f'/offices/{office.id}/', payload, 'application/json')
+    response = client.put('/offices/{}/'.format(office.id), payload, 'application/json')
     assert response.status_code == 403
 
 
@@ -144,7 +145,7 @@ def test_manager_update_office(client, office, user):
     user_url = reverse('user-detail', args=[user.id])
     payload = json.dumps({'name': 'office 1', 'manager': user_url})
     assert client.login(username=user.username, password=default_password) == True
-    response = client.put(f'/offices/{office.id}/', payload, 'application/json')
+    response = client.put('/offices/{}/'.format(office.id), payload, 'application/json')
     assert response.status_code == 200
     
 
@@ -153,7 +154,7 @@ def test_admin_update_office(client, office):
     user_url = reverse('user-detail', args=[user.id])
     payload = json.dumps({'name': 'office 1', 'manager': user_url})
     assert client.login(username=user.username, password=default_password) == True
-    response = client.put(f'/offices/{office.id}/', payload, 'application/json')
+    response = client.put('/offices/{}/'.format(office.id), payload, 'application/json')
     assert response.status_code == 200
 
 
@@ -162,13 +163,13 @@ def test_superuser_update_office(client, office):
     user_url = reverse('user-detail', args=[user.id])
     payload = json.dumps({'name': 'office 1', 'manager': user_url})
     assert client.login(username=user.username, password=default_password) == True
-    response = client.put(f'/offices/{office.id}/', payload, 'application/json')
+    response = client.put('/offices/{}/'.format(office.id), payload, 'application/json')
     assert response.status_code == 200
 
 
 def test_unauthenticated_partial_update_office(client, office):
     payload = {'name': 'office 1'}
-    response = client.patch(f'/offices/{office.id}/', payload)
+    response = client.patch('/offices/{}/'.format(office.id), payload)
     assert response.status_code == 403
 
 
@@ -176,14 +177,14 @@ def test_simple_user_partial_update_office(client, office):
     user = UserFactory.create()
     payload = json.dumps({'name': 'office 1'})
     assert client.login(username=user.username, password=default_password) == True
-    response = client.patch(f'/offices/{office.id}/', payload)
+    response = client.patch('/offices/{}/'.format(office.id), payload)
     assert response.status_code == 403
 
 
 def test_manager_partial_update_office(client, office, user):
     payload = json.dumps({'name': 'office 1'})
     assert client.login(username=user.username, password=default_password) == True
-    response = client.patch(f'/offices/{office.id}/', payload, 'application/json')
+    response = client.patch('/offices/{}/'.format(office.id), payload, 'application/json')
     assert response.status_code == 200
     
 
@@ -191,7 +192,7 @@ def test_admin_partial_update_office(client, office):
     user = UserFactory.create(is_staff=True)
     payload = json.dumps({'name': 'office 1'})
     assert client.login(username=user.username, password=default_password) == True
-    response = client.patch(f'/offices/{office.id}/', payload, 'application/json')
+    response = client.patch('/offices/{}/'.format(office.id), payload, 'application/json')
     assert response.status_code == 200
 
 
@@ -199,39 +200,39 @@ def test_superuser_partial_update_office(client, office):
     user = UserFactory.create(is_superuser=True)
     payload = json.dumps({'name': 'office 1'})
     assert client.login(username=user.username, password=default_password) == True
-    response = client.patch(f'/offices/{office.id}/', payload, 'application/json')
+    response = client.patch('/offices/{}/'.format(office.id), payload, 'application/json')
     assert response.status_code == 200
 
 
 def test_unauthenticated_destroy_office(client, office):
-    response = client.delete(f'/offices/{office.id}/')
+    response = client.delete('/offices/{}/'.format(office.id))
     assert response.status_code == 403
 
 
 def test_simple_user_destroy_office(client, office):
     user = UserFactory.create()
     assert client.login(username=user.username, password=default_password) == True
-    response = client.delete(f'/offices/{office.id}/')
+    response = client.delete('/offices/{}/'.format(office.id))
     response.status_code == 403
 
 
 def test_manager_destroy_office(client, office, user):
     assert client.login(username=user.username, password=default_password) == True
-    response = client.delete(f'/offices/{office.id}/')
+    response = client.delete('/offices/{}/'.format(office.id))
     assert response.status_code == 204
     
 
 def test_admin_destroy_office(client, office):
     user = UserFactory.create(is_staff=True)
     assert client.login(username=user.username, password=default_password) == True
-    response = client.delete(f'/offices/{office.id}/')
+    response = client.delete('/offices/{}/'.format(office.id))
     assert response.status_code == 204
 
 
 def test_superuser_destroy_office(client, office):
     user = UserFactory.create(is_superuser=True)
     assert client.login(username=user.username, password=default_password) == True
-    response = client.delete(f'/offices/{office.id}/')
+    response = client.delete('/offices/{}/'.format(office.id))
     assert response.status_code == 204
 
 
@@ -268,34 +269,34 @@ def test_superuser_list_issue(client, issue):
 
 
 def test_unauthenticated_retrieve_issue(client, issue):
-    response = client.get(f'/issues/{issue.id}/')
+    response = client.get('/issues/{}/'.format(issue.id))
     assert response.status_code == 403
 
 
 def test_simple_user_retrieve_issue(client, issue):
     user = UserFactory.create()
     assert client.login(username=user.username, password=default_password) == True
-    response = client.get(f'/issues/{issue.id}/')
+    response = client.get('/issues/{}/'.format(issue.id))
     assert response.status_code == 200
 
 
 def test_manager_retrieve_issue(client, office, user, issue):
     assert client.login(username=user.username, password=default_password) == True
-    response = client.get(f'/issues/{issue.id}/')
+    response = client.get('/issues/{}/'.format(issue.id))
     assert response.status_code == 200
 
 
 def test_admin_retrieve_issue(client, issue):
     user = UserFactory.create(is_staff=True)
     assert client.login(username=user.username, password=default_password) == True
-    response = client.get(f'/issues/{issue.id}/')
+    response = client.get('/issues/{}/'.format(issue.id))
     assert response.status_code == 200
 
 
 def test_superuser_retrieve_issue(client, issue):
     user = UserFactory.create(is_superuser=True)
     assert client.login(username=user.username, password=default_password) == True
-    response = client.get(f'/issues/{issue.id}/')
+    response = client.get('/issues/{}/'.format(issue.id))
     assert response.status_code == 200
 
 
@@ -338,7 +339,7 @@ def test_superuser_create_issue(client, office):
 
 def test_unauthenticated_update_issue(client, issue):
     payload = json.dumps({'description': ''})
-    response = client.put(f'/issues/{issue.id}/', payload, 'application/json')
+    response = client.put('/issues/{}/'.format(issue.id), payload, 'application/json')
     assert response.status_code == 403
 
 
@@ -347,14 +348,14 @@ def test_simple_user_update_issue(client, issue):
     office = OfficeFactory.create()
     payload = json.dumps(get_issue_serialized(office, user))
     assert client.login(username=user.username, password=default_password) == True
-    response = client.put(f'/issues/{issue.id}/', payload, 'application/json')
+    response = client.put('/issues/{}/'.format(issue.id), payload, 'application/json')
     assert response.status_code == 403
 
 
 def test_manager_update_issue(client, office, user, issue):
     payload = json.dumps(get_issue_serialized(office, user))
     assert client.login(username=user.username, password=default_password) == True
-    response = client.put(f'/issues/{issue.id}/', payload, 'application/json')
+    response = client.put('/issues/{}/'.format(issue.id), payload, 'application/json')
     assert response.status_code == 200
     
 
@@ -362,7 +363,7 @@ def test_admin_update_issue(client, office, issue):
     user = UserFactory.create(is_staff=True)
     payload = json.dumps(get_issue_serialized(office, user))
     assert client.login(username=user.username, password=default_password) == True
-    response = client.put(f'/issues/{issue.id}/', payload, 'application/json')
+    response = client.put('/issues/{}/'.format(issue.id), payload, 'application/json')
     assert response.status_code == 200
 
 
@@ -370,13 +371,13 @@ def test_superuser_update_issue(client, office, issue):
     user = UserFactory.create(is_superuser=True)
     payload = json.dumps(get_issue_serialized(office, user))
     assert client.login(username=user.username, password=default_password) == True
-    response = client.put(f'/issues/{issue.id}/', payload, 'application/json')
+    response = client.put('/issues/{}/'.format(issue.id), payload, 'application/json')
     assert response.status_code == 200
 
 
 def test_unauthenticated_partial_update_issue(client, issue):
     payload = json.dumps({'description': 'update'})
-    response = client.patch(f'/issues/{issue.id}/', payload, 'application/json')
+    response = client.patch('/issues/{}/'.format(issue.id), payload, 'application/json')
     assert response.status_code == 403
 
 
@@ -384,14 +385,14 @@ def test_simple_user_partial_update_issue(client, issue):
     user = UserFactory()
     payload = json.dumps({'description': 'update'})
     assert client.login(username=user.username, password=default_password) == True
-    response = client.patch(f'/issues/{issue.id}/', payload, 'application/json')
+    response = client.patch('/issues/{}/'.format(issue.id), payload, 'application/json')
     assert response.status_code == 403
 
 
 def test_manager_partial_update_issue(client, office, user, issue):
     payload = json.dumps({'description': 'update'})
     assert client.login(username=user.username, password=default_password) == True
-    response = client.patch(f'/issues/{issue.id}/', payload, 'application/json')
+    response = client.patch('/issues/{}/'.format(issue.id), payload, 'application/json')
     assert response.status_code == 200
     
 
@@ -399,7 +400,7 @@ def test_admin_partial_update_issue(client, issue):
     user = UserFactory(is_staff=True)
     payload = json.dumps({'description': 'update'})
     assert client.login(username=user.username, password=default_password) == True
-    response = client.patch(f'/issues/{issue.id}/', payload, 'application/json')
+    response = client.patch('/issues/{}/'.format(issue.id), payload, 'application/json')
     assert response.status_code == 200
 
 
@@ -407,32 +408,32 @@ def test_superuser_partial_update_issue(client, issue):
     user = UserFactory(is_superuser=True)
     payload = json.dumps({'description': 'update'})
     assert client.login(username=user.username, password=default_password) == True
-    response = client.patch(f'/issues/{issue.id}/', payload, 'application/json')
+    response = client.patch('/issues/{}/'.format(issue.id), payload, 'application/json')
     assert response.status_code == 200
 
 
 def test_unauthenticated_destroy_issue(client, issue):
-    response = client.delete(f'/issues/{issue.id}/')
+    response = client.delete('/issues/{}/'.format(issue.id))
     assert response.status_code == 403
 
 
 def test_simple_user_destroy_issue(client, issue):
     user = UserFactory()
     assert client.login(username=user.username, password=default_password) == True
-    response = client.delete(f'/issues/{issue.id}/')
+    response = client.delete('/issues/{}/'.format(issue.id))
     assert response.status_code == 403
 
 
 def test_manager_destroy_issue(client, office, user, issue):
     assert client.login(username=user.username, password=default_password) == True
-    response = client.delete(f'/issues/{issue.id}/')
+    response = client.delete('/issues/{}/'.format(issue.id))
     assert response.status_code == 403
     
 
 def test_admin_destroy_issue(client, issue):
     user = UserFactory(is_staff=True)
     assert client.login(username=user.username, password=default_password) == True
-    response = client.delete(f'/issues/{issue.id}/')
+    response = client.delete('/issues/{}/'.format(issue.id))
     assert response.status_code == 403
 
 
@@ -440,122 +441,122 @@ def test_admin_destroy_issue(client, issue):
 def test_superuser_destroy_issue(client, issue):
     user = UserFactory(is_superuser=True)
     assert client.login(username=user.username, password=default_password) == True
-    response = client.delete(f'/issues/{issue.id}/')
+    response = client.delete('/issues/{}/'.format(issue.id))
     assert response.status_code == 403
 
 
 def test_unauthenticated_start_issue(client, issue):
-    response = client.get(f'/issues/{issue.id}/start/')
+    response = client.get('/issues/{}/start/'.format(issue.id))
     assert response.status_code == 403
 
 
 def test_simple_user_start_issue(client, issue):
     user = UserFactory()
     assert client.login(username=user.username, password=default_password) == True
-    response = client.get(f'/issues/{issue.id}/start/')
+    response = client.get('/issues/{}/start/'.format(issue.id))
     assert response.status_code == 403
 
 
 def test_manager_start_issue(client, office, user, issue):
     assert client.login(username=user.username, password=default_password) == True
-    response = client.get(f'/issues/{issue.id}/start/')
+    response = client.get('/issues/{}/start/'.format(issue.id))
     assert response.status_code == 200
     
 
 def test_admin_start_issue(client, issue):
     user = UserFactory(is_staff=True)
     assert client.login(username=user.username, password=default_password) == True
-    response = client.get(f'/issues/{issue.id}/start/')
+    response = client.get('/issues/{}/start/'.format(issue.id))
     assert response.status_code == 200
 
 
 def test_superuser_start_issue(client, issue):
     user = UserFactory(is_superuser=True)
     assert client.login(username=user.username, password=default_password) == True
-    response = client.get(f'/issues/{issue.id}/start/')
+    response = client.get('/issues/{}/start/'.format(issue.id))
     assert response.status_code == 200
 
 def test_owner_start_issue(client, issue):
     user = issue.owner
     assert client.login(username=user.username, password=default_password) == True
-    response = client.get(f'/issues/{issue.id}/start/')
+    response = client.get('/issues/{}/start/'.format(issue.id))
     assert response.status_code == 200
 
 
 def test_unauthenticated_finish_issue(client, issue):
-    response = client.get(f'/issues/{issue.id}/finish/')
+    response = client.get('/issues/{}/finish/'.format(issue.id))
     assert response.status_code == 403
 
 
 def test_simple_user_finish_issue(client, issue):
     user = UserFactory()
     assert client.login(username=user.username, password=default_password) == True
-    response = client.get(f'/issues/{issue.id}/finish/')
+    response = client.get('/issues/{}/finish/'.format(issue.id))
     assert response.status_code == 403
 
 
 def test_manager_finish_issue(client, office, user, issue):
     assert client.login(username=user.username, password=default_password) == True
-    response = client.get(f'/issues/{issue.id}/finish/')
+    response = client.get('/issues/{}/finish/'.format(issue.id))
     assert response.status_code == 200
     
 
 def test_admin_finish_issue(client, issue):
     user = UserFactory(is_staff=True)
     assert client.login(username=user.username, password=default_password) == True
-    response = client.get(f'/issues/{issue.id}/finish/')
+    response = client.get('/issues/{}/finish/'.format(issue.id))
     assert response.status_code == 200
 
 
 def test_superuser_finish_issue(client, issue):
     user = UserFactory(is_superuser=True)
     assert client.login(username=user.username, password=default_password) == True
-    response = client.get(f'/issues/{issue.id}/finish/')
+    response = client.get('/issues/{}/finish/'.format(issue.id))
     assert response.status_code == 200
 
 
 def test_owner_finish_issue(client, issue):
     user = issue.owner
     assert client.login(username=user.username, password=default_password) == True
-    response = client.get(f'/issues/{issue.id}/finish/')
+    response = client.get('/issues/{}/finish/'.format(issue.id))
     assert response.status_code == 200
 
 
 def test_unauthenticated_cancel_issue(client, issue):
-    response = client.get(f'/issues/{issue.id}/cancel/')
+    response = client.get('/issues/{}/cancel/'.format(issue.id))
     assert response.status_code == 403
 
 
 def test_simple_user_cancel_issue(client, issue):
     user = UserFactory()
     assert client.login(username=user.username, password=default_password) == True
-    response = client.get(f'/issues/{issue.id}/cancel/')
+    response = client.get('/issues/{}/cancel/'.format(issue.id))
     assert response.status_code == 403
 
 
 def test_manager_cancel_issue(client, office, user, issue):
     assert client.login(username=user.username, password=default_password) == True
-    response = client.get(f'/issues/{issue.id}/cancel/')
+    response = client.get('/issues/{}/cancel/'.format(issue.id))
     assert response.status_code == 200
     
 
 def test_admin_cancel_issue(client, issue):
     user = UserFactory(is_staff=True)
     assert client.login(username=user.username, password=default_password) == True
-    response = client.get(f'/issues/{issue.id}/cancel/')
+    response = client.get('/issues/{}/cancel/'.format(issue.id))
     assert response.status_code == 200
 
 
 def test_superuser_cancel_issue(client, issue):
     user = UserFactory(is_superuser=True)
     assert client.login(username=user.username, password=default_password) == True
-    response = client.get(f'/issues/{issue.id}/cancel/')
+    response = client.get('/issues/{}/cancel/'.format(issue.id))
     assert response.status_code == 200
 
 def test_owner_cancel_issue(client, issue):
     user = issue.owner
     assert client.login(username=user.username, password=default_password) == True
-    response = client.get(f'/issues/{issue.id}/cancel/')
+    response = client.get('/issues/{}/cancel/'.format(issue.id))
     assert response.status_code == 200
 
 
