@@ -7,7 +7,7 @@ python:
   - 3.6
 
 install:
-  - pip install tox
+  - pip install tox tox-travis
 
 script:
-  - tox --skip-missing-interpreters
+  - tox
